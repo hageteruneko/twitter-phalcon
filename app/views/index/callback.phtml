@@ -1,0 +1,16 @@
+<?= $this->tag->linkTo("/apli", "aplication"); ?>
+
+<?php
+
+$connection = $this->view->connection;
+$connection->get("account/verify_credentials");
+//var_dump($connection->get("account/verify_credentials"));
+
+$info = $connection->get('account/verify_credentials');
+
+print $info->id;
+print $info->name;
+
+?>
+
+<?= $this->tag->linkTo("/apli", "aplication"); ?>
