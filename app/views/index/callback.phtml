@@ -1,4 +1,4 @@
-<?= $this->tag->linkTo("/apli", "aplication"); ?>
+<?= $this->tag->linkTo("/apli", "aplication\n"); ?>
 
 <?php
 
@@ -10,7 +10,8 @@ $info = $connection->get('account/verify_credentials');
 
 print $info->id;
 print $info->name;
-
+echo "\n";
+var_dump($connection->get("account/verify_credentials"));
 ?>
 
 <?= $this->tag->linkTo("/apli", "aplication"); ?>
