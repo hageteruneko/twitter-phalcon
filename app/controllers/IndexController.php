@@ -100,19 +100,18 @@ class IndexController extends ControllerBase
         $this->view->zikosyokai = $this->persistent->zikosyokai;
         $this->view->connection = $this->persistent->connection;
 
+        $to = $this->persistent->connection;
+
         if ($this->request->hasFiles()){
             //アップロードファイルがあるかどうかをチェックします。
             $dir_path = BASE_PATH.'\public\img\/';
                 foreach ($this->request->getUploadedFiles() as $file) {
                     $file->moveTo($dir_path. DIRECTORY_SEPARATOR . $file->getName());
                     $img_file = $dir_path."\/".$file->getName();
+                    $to->oAuthRequestImage('account/update_profile_image', array('image' => $img_file));
                     $this->view->file = $img_file;
-                    //header("Location: " . './apli');
+                    header("Location: " . './apli');
                 }
-            header("Location: " . './apli');
-        }
-        if($this->request->isPost()){
-            header("Location: " . './apli');
         }
     }
 
