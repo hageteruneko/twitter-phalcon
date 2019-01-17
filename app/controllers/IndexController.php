@@ -1,5 +1,6 @@
 <?php
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 class IndexController extends ControllerBase
 {
 
@@ -44,6 +45,8 @@ class IndexController extends ControllerBase
         $this->persistent->id = $twitter->id;
         $this->persistent->name = $twitter->name;
         $this->persistent->profile_image = $twitter->profile_image;
+        $this->persistent->zikosyokai = $twitter->zikosyokai;
+        $this->persistent->connection = $user_connection;
         
         //var_dump($user_connection->get("account/verify_credentials"));
         if ($twitter->save() === false) {
@@ -63,6 +66,54 @@ class IndexController extends ControllerBase
         $this->view->id = $this->persistent->id;
         $this->view->name = $this->persistent->name;
         $this->view->image = $this->persistent->profile_image;
+
+        $this->view->kezi = Keziban::find();
+
+        if($this->request->isPost()){
+            $keziban = new keziban();
+            $keziban->id = $this->persistent->id;
+            $keziban->name = $this->persistent->name;
+            $keziban->image = $this->persistent->profile_image;
+            $keziban->comment = $this->request->getPost("comment");
+
+            if ($keziban->save() === false) {
+                echo "できなぁい：\n";
+            
+                $messages = $keziban->getMessages();
+            
+                foreach ($messages as $message) {
+                    echo $message, "\n";
+                }
+            } else {
+                echo 'セーブに成功した';
+            }
+
+            $this->view->test = $this->request->getPost("comment");
+            header("Location: " . './apli');
+        }
+    }
+    public function profileAction()
+    {
+        $this->view->id = $this->persistent->id;
+        $this->view->name = $this->persistent->name;
+        $this->view->image = $this->persistent->profile_image;
+        $this->view->zikosyokai = $this->persistent->zikosyokai;
+        $this->view->connection = $this->persistent->connection;
+
+        if ($this->request->hasFiles()){
+            //アップロードファイルがあるかどうかをチェックします。
+            $dir_path = BASE_PATH.'\public\img\/';
+                foreach ($this->request->getUploadedFiles() as $file) {
+                    $file->moveTo($dir_path. DIRECTORY_SEPARATOR . $file->getName());
+                    $img_file = $dir_path."\/".$file->getName();
+                    $this->view->file = $img_file;
+                    //header("Location: " . './apli');
+                }
+            header("Location: " . './apli');
+        }
+        if($this->request->isPost()){
+            header("Location: " . './apli');
+        }
     }
 
 }

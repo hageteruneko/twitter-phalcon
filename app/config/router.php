@@ -23,6 +23,13 @@ $router->add(
         "action"     => "apli",
     )
 );
+$router->add(
+    "/profile",
+    array(
+        "controller" => "index",
+        "action"     => "profile",
+    )
+);
 // Define your routes here
 
 $router->handle();

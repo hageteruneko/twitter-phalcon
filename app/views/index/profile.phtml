@@ -1,0 +1,36 @@
+<?php echo $this->view->id; ?>
+<?php echo $this->view->name; ?>
+<img src="<?php echo $this->view->image ?>"
+<?php echo $this->view->zikosyokai; ?>
+
+<?php echo $this->getContent(); ?>
+<p></p>
+<form action="apli" method="post" enctype="multipart/form-data">
+
+<div class="form-group">
+    <label for="fieldname" class="col-sm-2 control-label">name</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(["name","cols" => 30, "rows" => 4, "class" => "form-control", "id" => "fieldname"]) ?>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="fieldImage" class="col-sm-2 control-label">Image</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->fileField(["image","class" => "form-control", "id" => "fieldimage"]) ?>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="fieldzikosyokai" class="col-sm-2 control-label">zikosyokai</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(["zikosyokai","cols" => 30, "rows" => 4, "class" => "form-control", "id" => "fieldzikosyokai"]) ?>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <?php echo $this->tag->submitButton(["henko", "class" => "btn btn-default"]) ?>
+    </div>
+</div>
+</form>

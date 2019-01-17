@@ -7,6 +7,7 @@ use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
 use Phalcon\Flash\Direct as Flash;
+use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 
 require __DIR__ .'\..\..\..\..\..\vendor\autoload.php';
 use Abraham\TwitterOAuth\TwitterOAuth;
