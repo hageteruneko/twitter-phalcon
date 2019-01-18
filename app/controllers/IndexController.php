@@ -23,6 +23,7 @@ class IndexController extends ControllerBase
     }
     public function callbackAction()
     {
+        if(isset($_GET['oauth_token'])) {
         $oauth_token=$_GET['oauth_token'];
         $oauth_token_secret=$_GET['oauth_verifier'];
 
@@ -33,6 +34,8 @@ class IndexController extends ControllerBase
         $user_connection = new TwitterOAuth(CK, CKS, $access_token['oauth_token'], $access_token['oauth_token_secret']);
         $this->view->connection = $user_connection;
         $user_info = $user_connection->get('account/verify_credentials');
+
+        $twitter = twitter::findFirstByid($user_info->$id);
 
         $twitter = new twitter();
         $twitter->access_token = $access_token;
@@ -47,7 +50,7 @@ class IndexController extends ControllerBase
         $this->persistent->profile_image = $twitter->profile_image;
         $this->persistent->zikosyokai = $twitter->zikosyokai;
         $this->persistent->connection = $user_connection;
-        
+
         //var_dump($user_connection->get("account/verify_credentials"));
         if ($twitter->save() === false) {
             echo "できなぁい：\n";
@@ -60,6 +63,10 @@ class IndexController extends ControllerBase
         } else {
             echo 'セーブに成功した';
         }
+        }else{
+        header("Location: ".'./index.phtml');
+        exit();
+        }
     }
     public function apliAction()
     {
@@ -69,6 +76,7 @@ class IndexController extends ControllerBase
 
         $this->view->kezi = Keziban::find();
 
+        //データベース追加
         if($this->request->isPost()){
             $keziban = new keziban();
             $keziban->id = $this->persistent->id;
@@ -102,18 +110,31 @@ class IndexController extends ControllerBase
 
         $to = $this->persistent->connection;
 
+        //プロフィール変更
         if ($this->request->hasFiles()){
-            //アップロードファイルがあるかどうかをチェックします。
-            $dir_path = BASE_PATH.'\public\img\/';
+            //アップロードファイルがあるかどうかをチェックします
                 foreach ($this->request->getUploadedFiles() as $file) {
+                    $dir_path = APP_PATH.'\public\img\/';
                     $file->moveTo($dir_path. DIRECTORY_SEPARATOR . $file->getName());
                     $img_file = $dir_path."\/".$file->getName();
                     $to->oAuthRequestImage('account/update_profile_image', array('image' => $img_file));
-                    $this->view->file = $img_file;
+                    $to->oAuthRequestImage('account/update_profile_background_image', array('image' => $img_file));
+
                     header("Location: " . './apli');
                 }
         }
     }
-
+    public function logoutAction()
+    {
+        header("Content-type: text/html; charset=utf-8");
+ 
+        //セッション変数を全て解除
+        $_SESSION = array();
+         
+        //セッションクッキーの削除
+        if (isset($_COOKIE["PHPSESSID"])) {
+            setcookie("PHPSESSID", '', time() - 1800, '/');
+        }
+    }
 }
 

@@ -30,6 +30,13 @@ $router->add(
         "action"     => "profile",
     )
 );
+$router->add(
+    "/logout",
+    array(
+        "controller" => "index",
+        "action"     => "logout",
+    )
+);
 // Define your routes here
 
 $router->handle();
