@@ -1,6 +1,8 @@
 <?php
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Phalcon\Paginator\Adapter\Model as PaginatorModel;
+require __DIR__ .'\..\..\..\..\..\vendor\autoload.php';
+
 class IndexController extends ControllerBase
 {
 
@@ -29,7 +31,7 @@ class IndexController extends ControllerBase
 
 	    $connection = new TwitterOAuth(CK, CKS, $oauth_token, $oauth_token_secret);
 	    $access_token = $connection->oauth('oauth/access_token', array('oauth_verifier' => $_GET['oauth_verifier'], 'oauth_token'=> $_GET['oauth_token']));
-        
+        $this->persistent->access_token = $access_token;
         //取得したアクセストークンでユーザ情報を取得
         $user_connection = new TwitterOAuth(CK, CKS, $access_token['oauth_token'], $access_token['oauth_token_secret']);
         $this->view->connection = $user_connection;
@@ -42,7 +44,17 @@ class IndexController extends ControllerBase
         $twitter->id = $user_info->id;
         $twitter->name = $user_info->name;
         $twitter->screen_name = $user_info->screen_name;
-        $twitter->profile_image = $user_info->profile_image_url_https;
+
+        $url = $user_info->profile_image_url_https;
+        $data = file_get_contents($url);
+        $dir_path = BASE_PATH.'\public\img\/';
+        $img_name = date("YmdHis").".jpg";
+        $img_file = $dir_path.$img_name;
+        
+        file_put_contents($img_file,$data);
+        $twitter->profile_image = $img_name;
+        
+
         $twitter->zikosyokai = $user_info->description;
 
         $this->persistent->id = $twitter->id;
@@ -108,17 +120,16 @@ class IndexController extends ControllerBase
         $this->view->zikosyokai = $this->persistent->zikosyokai;
         $this->view->connection = $this->persistent->connection;
 
-        $to = $this->persistent->connection;
-
         //プロフィール変更
         if ($this->request->hasFiles()){
+            $dir_path = BASE_PATH.'\public\img\/';
             //アップロードファイルがあるかどうかをチェックします
                 foreach ($this->request->getUploadedFiles() as $file) {
-                    $dir_path = APP_PATH.'\public\img\/';
                     $file->moveTo($dir_path. DIRECTORY_SEPARATOR . $file->getName());
                     $img_file = $dir_path."\/".$file->getName();
-                    $to->oAuthRequestImage('account/update_profile_image', array('image' => $img_file));
-                    $to->oAuthRequestImage('account/update_profile_background_image', array('image' => $img_file));
+
+                    $this->persistent->profile_image = $file->getName();
+                    $this->view->image = $file->getName();
 
                     header("Location: " . './apli');
                 }

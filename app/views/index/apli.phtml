@@ -29,7 +29,7 @@ echo $this->getContent();
             <?php foreach ($kezi as $keziban): ?>
                     <tr>
                         <td><?php echo $keziban->name ?></td>
-                        <td><img src="<?php echo $keziban->image ?>"</td>
+                        <td><?php echo $this->tag->image("public/img/".$keziban->image) ?></td>
                         <td><?php
                         $replacement = '<a href="\1" target="_blank">\1</a>';
                         $pattern = '(https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+)';
