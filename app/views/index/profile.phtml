@@ -1,3 +1,24 @@
+
+
+<?php
+/**
+ * @var \Phalcon\Mvc\View\Engine\Php $this
+ */
+?>
+
+<div class="row">
+    <nav>
+        <ul class="pager">
+            <li class="previous"><?php echo $this->tag->linkTo(["apli", "Back"]) ?></li>
+        </ul>
+    </nav>
+</div>
+<div class="page-header">
+    <h1>
+        Edit profile
+    </h1>
+</div>
+
 <?php echo $this->view->id; ?>
 <?php echo $this->view->name; ?>
 <img src="<?php echo $this->view->image ?>"
@@ -5,8 +26,16 @@
 
 <?php echo $this->getContent(); ?>
 <p></p>
-<div class="container">
-<form action="apli" method="post" enctype="multipart/form-data">
+<?php
+    echo $this->tag->form(
+        [
+            "profile",
+            "autocomplete" => "off",
+            "class" => "form-horizontal",
+            "enctype" => "multipart/form-data"
+        ]
+    );
+?>
 
 <div class="form-group">
     <label for="fieldImage" class="col-sm-2 control-label">Image</label>
@@ -20,5 +49,6 @@
         <?php echo $this->tag->submitButton(["henko", "class" => "btn btn-default"]) ?>
     </div>
 </div>
+<?php echo $this->tag->endForm(); ?>
 </form>
 </div>
